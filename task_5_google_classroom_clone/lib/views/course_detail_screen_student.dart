@@ -8,7 +8,7 @@ import 'package:task_5_google_classroom_clone/model/course_model.dart';
 import 'package:task_5_google_classroom_clone/model/outline_model.dart';
 import 'package:task_5_google_classroom_clone/model/task_model.dart';
 import 'package:task_5_google_classroom_clone/service/course_service.dart';
-import 'package:task_5_google_classroom_clone/submit_task_screen.dart';
+import 'package:task_5_google_classroom_clone/views/submit_task_screen.dart';
 import 'package:task_5_google_classroom_clone/view_model/course_detail_view_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +35,7 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
   void initState() {
     super.initState();
     _viewModel = CourseDetailViewModel(widget.course);
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -45,38 +45,57 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
       appBar: AppBar(
         backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
-        title: Text(widget.course.title),
+        title: Text(
+          widget.course.title,
+          style: GoogleFonts.lato(),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add_comment),
             onPressed: () => _showAddCommentDialog(),
           ),
         ],
-        bottom: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          labelStyle: GoogleFonts.lato(),
-          unselectedLabelStyle: GoogleFonts.lato(),
-          controller: _tabController,
-          tabs: [
-            Tab(text: 'Description'),
-            Tab(text: 'Students'),
-            Tab(text: 'Tasks'),
-            Tab(text: 'Outlines'),
-            Tab(
-              text: 'Comments',
-            )
-          ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  widget.course.description,
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 14),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(height: 10),
+              TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white,
+                labelStyle: GoogleFonts.lato(),
+                unselectedLabelStyle: GoogleFonts.lato(),
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    text: 'Tasks',
+                  ),
+                  Tab(text: 'Outline'),
+                  Tab(text: 'Comments'),
+                  Tab(text: 'Students'),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildDescriptionTab(),
-          _buildEnrolledStudentsTab(),
           _buildTasksTab(),
           _buildOutlinesTab(),
-          _buildCommentsTab()
+          _buildCommentsTab(),
+          _buildEnrolledStudentsTab(),
         ],
       ),
     );
@@ -87,21 +106,37 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Comment'),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Add Comment',
+            style: GoogleFonts.lato(),
+          ),
           content: TextField(
             controller: _commentController,
-            decoration: InputDecoration(labelText: 'Enter your comment'),
+            decoration: InputDecoration(
+                labelText: 'Enter your comment',
+                labelStyle: GoogleFonts.lato(),
+                border: OutlineInputBorder()),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.lato(),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 _commentController.clear();
               },
             ),
-            TextButton(
-              child: Text('Add'),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  foregroundColor: Colors.white),
+              child: Text(
+                'Add',
+                style: GoogleFonts.lato(),
+              ),
               onPressed: () {
                 _addComment();
                 Navigator.of(context).pop();
@@ -164,7 +199,7 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
                         children: [
                           Text(comment['userEmail']),
                           SizedBox(height: 5),
-                          _buildReplyField(comment.id), // Add reply field here
+                          _buildReplyField(comment.id),
                         ],
                       ),
                       trailing: Text(
@@ -303,7 +338,12 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
           .addComment(widget.course.id, userEmail, commentText)
           .then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Comment added successfully')),
+          SnackBar(
+              backgroundColor: Colors.purple,
+              content: Text(
+                'Comment added successfully',
+                style: GoogleFonts.lato(color: Colors.white),
+              )),
         );
       }).catchError((error) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -311,21 +351,6 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
         );
       });
     }
-  }
-
-  Widget _buildDescriptionTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.course.description,
-            style: GoogleFonts.lato(fontSize: 16),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildEnrolledStudentsTab() {
@@ -507,12 +532,6 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text(outline.description),
-                trailing: outline.fileUrl != null
-                    ? IconButton(
-                        icon: Icon(Icons.download),
-                        onPressed: () => _downloadFile(outline.fileUrl!),
-                      )
-                    : Icon(Icons.insert_drive_file),
               ),
             );
           },
@@ -530,7 +549,13 @@ class _CourseDetailStudentScreenState extends State<CourseDetailStudentScreen>
         final File file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Downloaded to $filePath')),
+          SnackBar(
+            content: Text(
+              'Downloaded to $filePath',
+              style: GoogleFonts.lato(),
+            ),
+            backgroundColor: Colors.purple,
+          ),
         );
       } else {
         throw Exception('Failed to download file');

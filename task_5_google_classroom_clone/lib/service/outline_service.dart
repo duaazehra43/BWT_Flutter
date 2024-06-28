@@ -4,8 +4,11 @@ import 'package:task_5_google_classroom_clone/model/outline_model.dart';
 class OutlineService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> createOutline(String courseId, String title, String description,
-      String? fileUrl) async {
+  Future<void> createOutline(
+    String courseId,
+    String title,
+    String description,
+  ) async {
     try {
       await _firestore
           .collection('courses')
@@ -15,7 +18,6 @@ class OutlineService {
         'title': title,
         'description': description,
         'courseId': courseId,
-        'fileUrl': fileUrl, // Store the file URL in Firestore
       });
     } catch (e) {
       print('Error creating outline: $e');
@@ -35,7 +37,6 @@ class OutlineService {
                   title: doc['title'],
                   description: doc['description'],
                   courseId: courseId,
-                  fileUrl: doc['fileUrl'],
                 ))
             .toList());
   }

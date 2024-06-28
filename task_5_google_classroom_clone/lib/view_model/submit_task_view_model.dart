@@ -9,7 +9,7 @@ class SubmitTaskViewModel {
 
   String? fileUrl;
 
-  Future<void> uploadFile(dynamic document) async {
+  Future uploadFile(dynamic document) async {
     if (document is XFile) {
       await _uploadImageToFirebase(document);
     } else if (document is File) {

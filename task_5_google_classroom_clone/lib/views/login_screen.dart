@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task_5_google_classroom_clone/home_screen_student.dart';
+import 'package:task_5_google_classroom_clone/views/home_screen_student.dart';
 import 'package:task_5_google_classroom_clone/views/home_screen_teacher_screen.dart';
 import 'package:task_5_google_classroom_clone/views/reg_screen.dart';
 import 'package:task_5_google_classroom_clone/views/reset_pass.dart';
@@ -133,9 +133,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           } else {
                             await _viewModel.signOut();
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.purple,
                                 content: Text(
-                                    'Please verify your email before logging in.'),
+                                  'Please verify your email before logging in.',
+                                  style: GoogleFonts.lato(color: Colors.white),
+                                ),
                                 duration: Duration(seconds: 5),
                               ),
                             );

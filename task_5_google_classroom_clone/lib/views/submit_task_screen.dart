@@ -167,8 +167,12 @@ class _SubmitTaskScreenState extends State<SubmitTaskScreen> {
       }
 
       await _taskService.submitTask(submissionData);
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Submitted Successfully")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.purple,
+          content: Text(
+            "Submitted Successfully",
+            style: GoogleFonts.lato(color: Colors.white),
+          )));
     } catch (e) {
       print('Error submitting task: $e');
     } finally {

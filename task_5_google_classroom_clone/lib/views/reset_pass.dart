@@ -20,6 +20,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        foregroundColor: Colors.white,
+        title: Text(
+          "Reset Password",
+          style: GoogleFonts.lato(
+            fontSize: 24,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -32,14 +43,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SizedBox(height: 40),
-                        Text(
-                          "Reset Password",
-                          style: GoogleFonts.lato(
-                            fontSize: 24,
-                            color: Colors.purple,
-                          ),
-                        ),
-                        SizedBox(height: 20),
                         TextFormField(
                           controller: emailController,
                           decoration: InputDecoration(

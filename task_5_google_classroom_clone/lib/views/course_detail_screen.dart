@@ -6,8 +6,6 @@ import 'package:task_5_google_classroom_clone/model/course_model.dart';
 import 'package:task_5_google_classroom_clone/model/task_model.dart';
 import 'package:task_5_google_classroom_clone/model/outline_model.dart';
 import 'package:task_5_google_classroom_clone/service/course_service.dart';
-import 'package:task_5_google_classroom_clone/views/outline_edit_screen.dart';
-import 'package:task_5_google_classroom_clone/views/task_edit_screen.dart';
 import 'package:task_5_google_classroom_clone/view_model/course_detail_view_model.dart';
 
 class CourseDetailScreen extends StatefulWidget {
@@ -31,7 +29,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
   void initState() {
     super.initState();
     _viewModel = CourseDetailViewModel(widget.course);
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -41,40 +39,149 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
       appBar: AppBar(
         backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
-        title: Text(widget.course.title),
+        title: Text(
+          widget.course.title,
+          style: GoogleFonts.lato(),
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add_comment),
             onPressed: () => _showAddCommentDialog(),
           ),
         ],
-        bottom: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          labelStyle: GoogleFonts.lato(),
-          unselectedLabelStyle: GoogleFonts.lato(),
-          controller: _tabController,
-          tabs: [
-            Tab(text: 'Description'),
-            Tab(text: 'Students'),
-            Tab(text: 'Tasks'),
-            Tab(text: 'Outlines'),
-            Tab(
-              text: 'Comments',
-            )
-          ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  widget.course.description,
+                  style: GoogleFonts.lato(color: Colors.white, fontSize: 14),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(height: 10),
+              TabBar(
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white,
+                labelStyle: GoogleFonts.lato(),
+                unselectedLabelStyle: GoogleFonts.lato(),
+                controller: _tabController,
+                tabs: [
+                  Tab(
+                    text: 'Tasks',
+                  ),
+                  Tab(text: 'Outline'),
+                  Tab(text: 'Comments'),
+                  Tab(text: 'Students'),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildDescriptionTab(),
-          _buildEnrolledStudentsTab(),
           _buildTasksTab(),
           _buildOutlinesTab(),
-          _buildCommentsTab()
+          _buildCommentsTab(),
+          _buildEnrolledStudentsTab(),
         ],
       ),
+    );
+  }
+
+  void showEditOutlineDialog(BuildContext context, OutlineModel outline,
+      CourseDetailViewModel viewModel) {
+    TextEditingController _titleController =
+        TextEditingController(text: outline.title);
+    TextEditingController _descriptionController =
+        TextEditingController(text: outline.description);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Edit Outline',
+            style: GoogleFonts.lato(),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    labelStyle: GoogleFonts.lato(),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _descriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    labelStyle: GoogleFonts.lato(),
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: null,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text(
+                'Update',
+                style: GoogleFonts.lato(),
+              ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  foregroundColor: Colors.white),
+              onPressed: () {
+                String title = _titleController.text.trim();
+                String description = _descriptionController.text.trim();
+
+                viewModel.updateOutline(outline.id, {
+                  'title': title,
+                  'description': description,
+                }).then((_) {
+                  Navigator.pop(
+                      context); // Return to previous screen after update
+                }).catchError((error) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Failed to update outline: $error'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -264,10 +371,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Comment'),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Add Comment',
+            style: GoogleFonts.lato(),
+          ),
           content: TextField(
             controller: _commentController,
-            decoration: InputDecoration(labelText: 'Enter your comment'),
+            decoration: InputDecoration(
+                labelText: 'Enter your comment',
+                labelStyle: GoogleFonts.lato(),
+                border: OutlineInputBorder()),
           ),
           actions: <Widget>[
             TextButton(
@@ -277,8 +391,14 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
                 _commentController.clear();
               },
             ),
-            TextButton(
-              child: Text('Add'),
+            ElevatedButton(
+              child: Text(
+                'Add',
+                style: GoogleFonts.lato(),
+              ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purple,
+                  foregroundColor: Colors.white),
               onPressed: () {
                 _addComment();
                 Navigator.of(context).pop();
@@ -372,11 +492,11 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        List<DocumentSnapshot> studentDocs = snapshot.data!.docs;
+
+        if (studentDocs.isEmpty) {
           return Center(child: Text('No students enrolled.'));
         }
-
-        List<DocumentSnapshot> studentDocs = snapshot.data!.docs;
 
         return ListView.builder(
           shrinkWrap: true,
@@ -385,6 +505,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
           itemBuilder: (context, index) {
             var student = studentDocs[index];
             return ListTile(
+              key: Key(student.id), // Ensure each item has a unique key
               leading: CircleAvatar(
                 child: Text(student['name'][0]),
               ),
@@ -453,12 +574,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
                       icon: Icon(Icons.edit),
                       onPressed: () => _editTask(task),
                     ),
-                    task.fileUrl != null
-                        ? task.fileUrl!.toLowerCase().endsWith('.pdf')
-                            ? Icon(Icons.picture_as_pdf)
-                            : Image.network(task.fileUrl!,
-                                width: 50, height: 50, fit: BoxFit.cover)
-                        : Icon(Icons.insert_drive_file),
                   ],
                 ),
               ),
@@ -469,31 +584,30 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
     );
   }
 
-  void _editTask(TaskModel task) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TaskEditScreen(task: task, viewModel: _viewModel),
-      ),
-    );
-  }
-
   void _showDeleteTaskDialog(TaskModel task) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Task'),
-        content: Text('Are you sure you want to delete this task?'),
+        title: Text(
+          'Delete Task',
+          style: GoogleFonts.lato(),
+        ),
+        content: Text(
+          'Are you sure you want to delete this task?',
+          style: GoogleFonts.lato(),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Cancel'),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               _viewModel.deleteTask(task.id); // Call ViewModel method to delete
             },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple, foregroundColor: Colors.white),
             child: Text('Delete'),
           ),
         ],
@@ -544,14 +658,9 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
                     ),
                     IconButton(
                       icon: Icon(Icons.edit),
-                      onPressed: () => _editOutline(outline),
+                      onPressed: () =>
+                          showEditOutlineDialog(context, outline, _viewModel),
                     ),
-                    outline.fileUrl != null
-                        ? outline.fileUrl!.toLowerCase().endsWith('.pdf')
-                            ? Icon(Icons.picture_as_pdf)
-                            : Image.network(outline.fileUrl!,
-                                width: 50, height: 50, fit: BoxFit.cover)
-                        : Icon(Icons.insert_drive_file),
                   ],
                 ),
               ),
@@ -562,34 +671,168 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
     );
   }
 
-  void _editOutline(OutlineModel outline) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            OutlineEditScreen(outline: outline, viewModel: _viewModel),
-      ),
+  void _editTask(TaskModel task) {
+    TextEditingController titleController =
+        TextEditingController(text: task.title);
+    TextEditingController descriptionController =
+        TextEditingController(text: task.description);
+    DateTime? selectedDueDate = task.dueDate;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('Edit Task', style: GoogleFonts.lato()),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(
+                    labelText: 'Title',
+                    labelStyle: GoogleFonts.lato(),
+                    border: OutlineInputBorder()),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(
+                    labelText: 'Description',
+                    labelStyle: GoogleFonts.lato(),
+                    border: OutlineInputBorder()),
+                maxLines: null,
+              ),
+              SizedBox(height: 10),
+              InkWell(
+                onTap: () => _selectDueDate(context, selectedDueDate),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                      labelText: 'Due Date',
+                      labelStyle: GoogleFonts.lato(),
+                      border: OutlineInputBorder()),
+                  child: Text(
+                    selectedDueDate != null
+                        ? "${selectedDueDate.toLocal()}".split(' ')[0]
+                        : 'Select date',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.lato(),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            ElevatedButton(
+              child: Text('Save'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                String title = titleController.text.trim();
+                String description = descriptionController.text.trim();
+                if (selectedDueDate == null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Please select a due date.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
+
+                _viewModel.updateTask(task.id, {
+                  'title': title,
+                  'description': description,
+                  'dueDate': selectedDueDate.toIso8601String(),
+                }).then((_) {
+                  Navigator.pop(context); // Close the edit dialog
+                }).catchError((error) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Failed to update task: $error'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  void _selectDueDate(BuildContext context, DateTime? selectedDate) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
   }
 
   void _showDeleteOutlineDialog(OutlineModel outline) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Outline'),
-        content: Text('Are you sure you want to delete this outline?'),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Delete Outline',
+          style: GoogleFonts.lato(),
+        ),
+        content: Text(
+          'Are you sure you want to delete this outline?',
+          style: GoogleFonts.lato(),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.lato(),
+            ),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               _viewModel
                   .deleteOutline(outline.id); // Call ViewModel method to delete
             },
-            child: Text('Delete'),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple, foregroundColor: Colors.white),
+            child: Text(
+              'Delete',
+              style: GoogleFonts.lato(),
+            ),
           ),
         ],
       ),

@@ -56,6 +56,20 @@ class AuthService {
     }
   }
 
+  Future<Map<String, dynamic>> getUserInfo(String uid) async {
+    try {
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        return userDoc.data() as Map<String, dynamic>;
+      } else {
+        throw Exception('User does not exist');
+      }
+    } catch (e) {
+      throw Exception('Error fetching user info: $e');
+    }
+  }
+
   Stream<User?> get currentUser => _auth.authStateChanges();
 
   Future<void> signOut() async {
