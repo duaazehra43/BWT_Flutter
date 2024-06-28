@@ -4,13 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: 'AIzaSyArEJ__pdM_fUMxwm6DG0yWcSTJYTIytzI',
-          appId: '1:546254047424:android:f6d12b30b456c6469d4525',
-          messagingSenderId: '546254047424',
-          projectId: 'classroom-65d32',
-          storageBucket: 'classroom-65d32.appspot.com'));
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
