@@ -8,7 +8,7 @@ class CourseDetailViewModel {
   Stream<QuerySnapshot> get enrolledStudentsStream {
     return FirebaseFirestore.instance
         .collection('users')
-        .where(FieldPath.documentId, whereIn: course.studentIds)
+        .where(FieldPath.documentId, isEqualTo: course.studentIds)
         .snapshots();
   }
 
