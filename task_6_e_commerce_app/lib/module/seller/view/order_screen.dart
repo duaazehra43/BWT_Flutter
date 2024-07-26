@@ -37,8 +37,6 @@ class _OrdersScreenSellerState extends State<OrdersScreenSeller> {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('orders')
           .where('status', isNotEqualTo: 'Delivered')
-          .where('status',
-              isNotEqualTo: 'Cancelled') // Filter out delivered orders
           .get();
 
       List<Map<String, dynamic>> orders = [];
@@ -47,7 +45,7 @@ class _OrdersScreenSellerState extends State<OrdersScreenSeller> {
         var items = List<Map<String, dynamic>>.from(data['items'] ?? []);
         bool hasStoreId = items.any((item) => item['storeId'] == storeId);
 
-        if (hasStoreId) {
+        if (hasStoreId && data['status'] != 'Cancelled') {
           orders.add({
             'id': doc.id,
             'data': data,
@@ -70,10 +68,14 @@ class _OrdersScreenSellerState extends State<OrdersScreenSeller> {
           .doc(orderId)
           .update({'status': newStatus});
       print('Order status updated to $newStatus');
-      // Optionally, show a snackbar or some other notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Order status updated to $newStatus')),
+      );
     } catch (e) {
       print('Error updating order status: $e');
-      // Handle the error as needed
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error updating order status')),
+      );
     }
   }
 
@@ -262,12 +264,9 @@ class _OrdersScreenSellerState extends State<OrdersScreenSeller> {
                                 child: Text(value),
                               );
                             }).toList(),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(() {
-                                  status = newValue;
-                                });
-                                updateOrderStatus(orderId, newValue);
+                            onChanged: (String? newStatus) {
+                              if (newStatus != null && newStatus != status) {
+                                updateOrderStatus(orderId, newStatus);
                               }
                             },
                           ),

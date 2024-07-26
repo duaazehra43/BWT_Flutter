@@ -8,7 +8,9 @@ import 'package:task_6_e_commerce_app/module/seller/view_model/home_screen_dashb
 class CreateStoreScreen extends StatefulWidget {
   final String userId;
 
-  CreateStoreScreen(this.userId);
+  CreateStoreScreen(
+    this.userId,
+  );
 
   @override
   _CreateStoreScreenState createState() => _CreateStoreScreenState();

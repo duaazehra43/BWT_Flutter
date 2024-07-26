@@ -5,7 +5,13 @@ import 'package:task_6_e_commerce_app/SplashScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: 'AIzaSyBRLV7hgFr2Sph3f82eXK4dcJeZe9yExIU',
+          appId: '1:218002329417:android:e4c68b48a8057167881498',
+          messagingSenderId: '218002329417',
+          projectId: 'e-commerce-6cddf',
+          storageBucket: 'e-commerce-6cddf.appspot.com'));
 
   FirebaseAuth auth = FirebaseAuth.instance;
   runApp(MyApp(

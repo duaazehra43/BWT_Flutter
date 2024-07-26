@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_6_e_commerce_app/LoginScreen.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   final User user;
@@ -9,7 +10,7 @@ class DashboardViewModel extends ChangeNotifier {
   String? userName;
   String? userEmail;
   String? userRole;
-  List<dynamic> items = [];
+  List<DocumentSnapshot> items = [];
 
   DashboardViewModel({required this.user}) {
     // Initial fetch
@@ -51,19 +52,24 @@ class DashboardViewModel extends ChangeNotifier {
 
   Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacementNamed('/login');
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   Future<void> fetchItems({String? category}) async {
     try {
       QuerySnapshot snapshot = category == null
-          ? await FirebaseFirestore.instance.collection('items').get()
+          ? await FirebaseFirestore.instance
+              .collection('items')
+              .where('storeId', isEqualTo: user.uid)
+              .get()
           : await FirebaseFirestore.instance
               .collection('items')
+              .where('storeId', isEqualTo: user.uid)
               .where('category', isEqualTo: category)
               .get();
 
-      items = snapshot.docs.map((doc) => doc.data()).toList();
+      items = snapshot.docs; // Use DocumentSnapshot directly
       notifyListeners();
     } catch (e) {
       print("Error fetching items: $e");
@@ -74,7 +80,8 @@ class DashboardViewModel extends ChangeNotifier {
   Future<void> deleteItem(String itemId) async {
     try {
       await FirebaseFirestore.instance.collection('items').doc(itemId).delete();
-      items.removeWhere((item) => item['id'] == itemId);
+      items.removeWhere(
+          (item) => item.id == itemId); // Check item.id instead of item['id']
       notifyListeners();
     } catch (e) {
       print("Error deleting item: $e");

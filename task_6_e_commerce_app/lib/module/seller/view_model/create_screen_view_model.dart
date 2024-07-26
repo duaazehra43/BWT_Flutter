@@ -73,6 +73,7 @@ class StoreViewModel extends ChangeNotifier {
         'phone': phone,
         'address': address,
         'image': _imageUrl,
+        'isActive': false,
       });
       notifyListeners();
     } catch (e) {

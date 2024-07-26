@@ -14,8 +14,6 @@ class AuthService {
         password: password,
       );
 
-      await userCredential.user!.sendEmailVerification();
-
       DocumentReference userDocRef =
           _firestore.collection('users').doc(userCredential.user!.uid);
       if (!(await userDocRef.get()).exists) {
@@ -23,7 +21,6 @@ class AuthService {
           'name': name,
           'email': email,
           'role': role,
-          'emailVerified': false,
         });
       }
 
@@ -43,15 +40,6 @@ class AuthService {
       return userCredential.user;
     } catch (e) {
       print('Error signing in: $e');
-      throw e; // Propagate exception for handling in UI
-    }
-  }
-
-  Future<void> resetPassword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      print('Error resetting password: $e');
       throw e; // Propagate exception for handling in UI
     }
   }

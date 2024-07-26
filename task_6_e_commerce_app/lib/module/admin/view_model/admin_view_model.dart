@@ -32,6 +32,7 @@ class AdminViewModel extends ChangeNotifier {
   }
 
   Future<void> updateStoreStatus(String storeId, bool isActive) async {
+    print('Updating store status: storeId=$storeId, isActive=$isActive');
     try {
       await FirebaseFirestore.instance
           .collection('stores')
@@ -49,7 +50,7 @@ class AdminViewModel extends ChangeNotifier {
       await FirebaseFirestore.instance
           .collection('stores')
           .doc(storeId)
-          .update({'isBanned': isBanned});
+          .update({'isBanned': isBanned, 'isActive': !isBanned});
       print('Store banned status updated to $isBanned');
       await fetchStores(); // Refresh store list after update
     } catch (e) {

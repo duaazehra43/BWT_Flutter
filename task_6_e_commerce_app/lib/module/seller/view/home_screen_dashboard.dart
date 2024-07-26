@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:task_6_e_commerce_app/module/seller/add_item.dart';
-import 'package:task_6_e_commerce_app/module/seller/all_orders.dart';
-import 'package:task_6_e_commerce_app/module/seller/order_screen.dart';
-import 'package:task_6_e_commerce_app/module/seller/store_detail.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/add_item.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/all_orders.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/edit_item.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/order_screen.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/store_detail.dart';
+import 'package:task_6_e_commerce_app/module/seller/view/create_store.dart';
 import 'package:task_6_e_commerce_app/module/seller/view_model/home_screen_dashboard_view_model.dart';
 
 class HomeScreenDashboard extends StatefulWidget {
@@ -32,6 +35,8 @@ class _HomeScreenDashboardState extends State<HomeScreenDashboard>
 
   Future<void> _initialize() async {
     await viewModel.checkStoreStatus();
+    // Ensure items are fetched for the initial tab (e.g., 'All')
+    await viewModel.fetchItems();
   }
 
   void _handleTabSelection() {
@@ -82,6 +87,7 @@ class _HomeScreenDashboardState extends State<HomeScreenDashboard>
                   icon: Icon(Icons.refresh),
                   onPressed: () async {
                     await viewModel.checkStoreStatus();
+                    await viewModel.fetchItems();
                   },
                 ),
               ],
@@ -190,31 +196,7 @@ class _HomeScreenDashboardState extends State<HomeScreenDashboard>
                 ],
               ),
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: model.hasStore && model.isStoreVerified
-                  ? Colors.black
-                  : Colors.grey,
-              foregroundColor: Colors.white,
-              onPressed: () {
-                if (model.hasStore && model.isStoreVerified) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddItemScreen(
-                                storeId: widget.user.uid,
-                              )));
-                } else if (!model.hasStore) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Set up your store first')),
-                  );
-                } else if (!model.isStoreVerified) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Your store is not verified yet')),
-                  );
-                }
-              },
-              child: Icon(Icons.add),
-            ),
+            floatingActionButton: _buildFloatingActionButton(model),
             body: TabBarView(
               controller: _tabController,
               children: [
@@ -233,71 +215,189 @@ class _HomeScreenDashboardState extends State<HomeScreenDashboard>
   Widget _buildItemsGrid(DashboardViewModel model) {
     if (!model.hasStore) {
       return Center(
-          child: Text('Store is not created. Please set up your store.'));
+        child: Column(
+          children: [
+            const Text('Store is not created. Please set up your store.'),
+            const SizedBox(height: 5),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CreateStoreScreen(widget.user.uid),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+              ),
+              child: Text("Create a store"),
+            ),
+          ],
+        ),
+      );
     }
 
     if (!model.isStoreVerified) {
-      return Center(child: Text('Your store is not verified yet.'));
+      return const Center(
+        child: Text('Your store is not verified yet. Please wait.'),
+      );
     }
 
     if (model.items.isEmpty) {
-      return Center(child: Text('No items found.'));
+      return const Center(
+        child: Text('No items found.'),
+      );
     }
 
     return GridView.builder(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(8),
+      itemCount: model.items.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.75,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
       ),
-      itemCount: model.items.length,
       itemBuilder: (context, index) {
-        var item = model.items[index];
+        final DocumentSnapshot itemSnapshot = model.items[index];
+        final Map<String, dynamic> item =
+            itemSnapshot.data() as Map<String, dynamic>;
+        final String itemId = itemSnapshot.id;
+        final imageUrl = (item['imageUrls'] as List).isNotEmpty
+            ? item['imageUrls'][0]
+            : null;
         return Card(
-          elevation: 5,
+          color: Colors.white,
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Stack(
             children: [
               Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: Image.network(
-                      item['image'],
-                      fit: BoxFit.cover,
-                    ),
+                    child: imageUrl != null
+                        ? ClipRRect(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(8)),
+                            child: Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          )
+                        : Container(
+                            color: Colors.grey,
+                            child: Icon(Icons.image,
+                                size: 50, color: Colors.white),
+                          ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      item['productName'],
-                      style: GoogleFonts.inter(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Price: \$${item['price']}',
-                      style: GoogleFonts.inter(fontSize: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item['name'] ?? '',
+                          style: GoogleFonts.inter(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '\$${item['price'] ?? ''}',
+                          style: GoogleFonts.inter(color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
               Positioned(
+                top: 0,
                 right: 0,
-                child: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => model.deleteItem(item['id']),
+                child: PopupMenuButton<String>(
+                  color: Colors.white,
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditItemScreen(
+                            itemData: item,
+                            itemId: itemId, // Pass the itemId here
+                          ),
+                        ),
+                      );
+                    } else if (value == 'delete') {
+                      _deleteItem(itemId);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit, color: Colors.black),
+                          SizedBox(width: 8),
+                          Text('Edit', style: GoogleFonts.inter())
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('Delete', style: GoogleFonts.inter())
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  void _deleteItem(String itemId) async {
+    try {
+      await FirebaseFirestore.instance.collection('items').doc(itemId).delete();
+    } catch (e) {
+      print('Error deleting item: $e');
+      // Handle error, e.g., show a snackbar with the error message
+    }
+  }
+
+  FloatingActionButton _buildFloatingActionButton(DashboardViewModel model) {
+    bool fabEnabled = model.hasStore && model.isStoreVerified;
+    return FloatingActionButton(
+      onPressed: fabEnabled
+          ? () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddItemScreen(
+                    storeId: widget.user.uid,
+                  ),
+                ),
+              );
+            }
+          : () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    !model.hasStore
+                        ? 'Set up your store first.'
+                        : 'Your store is not verified yet.',
+                  ),
+                ),
+              );
+            },
+      backgroundColor: fabEnabled ? Colors.black : Colors.grey,
+      child: Icon(Icons.add, color: Colors.white),
     );
   }
 }

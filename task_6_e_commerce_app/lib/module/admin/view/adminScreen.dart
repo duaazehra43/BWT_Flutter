@@ -12,6 +12,7 @@ class AdminScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => AdminViewModel()..fetchStores(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
@@ -23,7 +24,6 @@ class AdminScreen extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.logout),
               onPressed: () {
-                // Implement logout functionality
                 FirebaseAuth.instance.signOut().then((_) {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -96,19 +96,22 @@ class AdminScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 8.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  if (!store.isActive && !store.isBanned) {
-                                    viewModel.updateStoreStatus(
-                                        store.id, false);
-                                  }
-                                },
-                                child: Text('Reject'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
+                              if (!store
+                                  .isActive) // Show Reject button only if the store is not active
+                                ElevatedButton(
+                                  onPressed: () {
+                                    print('Reject button pressed');
+                                    if (!store.isActive && !store.isBanned) {
+                                      viewModel.updateStoreStatus(
+                                          store.id, false);
+                                    }
+                                  },
+                                  child: Text('Reject'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                  ),
                                 ),
-                              ),
                               SizedBox(width: 8.0),
                               ElevatedButton(
                                 onPressed: () {

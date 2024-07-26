@@ -28,12 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text,
         );
         if (user != null) {
-          // Check if the email is for admin
-          if (_emailController.text == 'duaamemon65@gmail.com') {
+          if (_emailController.text == 'dua@gmail.com') {
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AdminScreen()), // Navigate to AdminScreen
+              MaterialPageRoute(builder: (context) => AdminScreen()),
               (Route<dynamic> route) => false,
             );
             return; // Exit the function to avoid further checks
@@ -57,14 +54,31 @@ class _LoginScreenState extends State<LoginScreen> {
               (Route<dynamic> route) => false,
             );
           }
-        } else {
-          // Handle login failure
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to log in')),
+            SnackBar(
+              content: Text(
+                'Logged in successfully',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.black,
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Failed to log in',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.black,
+            ),
           );
         }
       } catch (e) {
         print(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
       }
     }
   }
