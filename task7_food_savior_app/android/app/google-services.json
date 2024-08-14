@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "321793752730",
+    "project_id": "food-savior-7f2a4",
+    "storage_bucket": "food-savior-7f2a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321793752730:android:d7cb94fcbeb42e43eea923",
+        "android_client_info": {
+          "package_name": "com.example.task7_food_savior_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9CAsLrZNJ-AOj4vvaY2qMR2xH8UfRZ2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:task7_food_savior_app/core/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/modules/auth/services/auth_service.dart';
+
+class LoginViewModel {
+  final AuthService _authService = AuthService();
+  String email = '';
+  String password = '';
+
+  Future<bool> login(BuildContext context) async {
+    try {
+      final user =
+          await _authService.signInWithEmailAndPassword(email, password);
+      if (user != null) {
+        context.go('/homescreen', extra: user);
+        context.showSnackBar('Login Successful');
+        return true;
+      }
+    } catch (e) {
+      context.showSnackBar('Login failed: ${e.toString()}');
+    }
+    return false;
+  }
+}

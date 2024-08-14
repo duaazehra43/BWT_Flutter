@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:task_6_e_commerce_app/LoginScreen.dart';
 import 'package:task_6_e_commerce_app/module/buyer/cartScreen.dart';
 import 'package:task_6_e_commerce_app/module/buyer/orderScreen.dart';
 import 'package:task_6_e_commerce_app/module/buyer/productDetail.dart';
@@ -68,6 +69,12 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen>
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => OrdersScreen()));
               },
-              icon: Icon(Icons.shopping_bag))
+              icon: Icon(Icons.shopping_bag)),
+          IconButton(onPressed: () => logout(context), icon: Icon(Icons.logout))
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(100),
