@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
-import 'package:task7_food_savior_app/core/constants/icons.dart';
-import 'package:task7_food_savior_app/core/extensions/sizedbox.dart';
-import 'package:task7_food_savior_app/core/shared/custombuttons.dart';
-import 'package:task7_food_savior_app/core/shared/customtextfield.dart';
-import 'package:task7_food_savior_app/modules/auth/services/signup_service.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/icons.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
+import 'package:task7_food_savior_app/core/auth/services/signup_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: ListView(
             children: [
               10.height,
-              Image.asset(IconsConstant.logoIcon),
+              Image.asset(logoIcon),
               10.height,
               CustomTextField(
                 labelText: 'Name',
@@ -72,7 +72,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               SizedBox(height: 12.h),
               DropdownButtonFormField<String>(
-                dropdownColor: ColorConstants.dropColor,
+                dropdownColor: dropColor,
                 value: _viewModel.role,
                 decoration: InputDecoration(
                     labelText: 'Role',

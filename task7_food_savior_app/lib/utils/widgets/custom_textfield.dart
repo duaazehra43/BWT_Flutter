@@ -31,7 +31,7 @@ class CustomTextField extends StatelessWidget {
           labelText: labelText,
           labelStyle: GoogleFonts.inter(),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(5),
           ),
         ),
         validator: validator,

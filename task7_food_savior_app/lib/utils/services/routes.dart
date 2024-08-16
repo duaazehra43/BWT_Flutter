@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
-import 'package:task7_food_savior_app/modules/donor/screens/add_donation.dart';
-import 'package:task7_food_savior_app/modules/donor/screens/edit_donation.dart';
-import 'package:task7_food_savior_app/modules/donor/screens/home_screen.dart';
-import 'package:task7_food_savior_app/modules/auth/screens/login.dart';
-import 'package:task7_food_savior_app/modules/auth/screens/signup.dart';
+import 'package:task7_food_savior_app/core/donor/screens/add_donation.dart';
+import 'package:task7_food_savior_app/core/donor/screens/edit_donation.dart';
+import 'package:task7_food_savior_app/core/donor/screens/home_screen.dart';
+import 'package:task7_food_savior_app/core/auth/screens/login.dart';
+import 'package:task7_food_savior_app/core/auth/screens/sign_up.dart';
 import 'package:task7_food_savior_app/splashScreen.dart';
 
 final GoRouter router = GoRouter(

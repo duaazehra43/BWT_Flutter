@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
-import 'package:task7_food_savior_app/core/constants/icons.dart';
-import 'package:task7_food_savior_app/core/extensions/sizedbox.dart';
-import 'package:task7_food_savior_app/core/shared/custombuttons.dart';
-import 'package:task7_food_savior_app/core/shared/customtextfield.dart';
-import 'package:task7_food_savior_app/modules/auth/services/login_service.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/icons.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
+import 'package:task7_food_savior_app/core/auth/services/login_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 80.height,
-                Image.asset(IconsConstant.logoIcon),
+                Image.asset(logoIcon),
                 20.height,
                 CustomTextField(
                   labelText: 'Email',
@@ -55,14 +55,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: 'Login',
                   onPressed: _login,
                 ),
-                TextButton(
-                  onPressed: () {
-                    context.push('/register');
-                  },
-                  child: Text(
-                    'Don\'t have an account? Register',
-                    style: GoogleFonts.inter(color: ColorConstants.textColor),
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Don\'t have an account?'),
+                    TextButton(
+                      onPressed: () {
+                        context.push('/register');
+                      },
+                      child: Text(
+                        'Register',
+                        style: GoogleFonts.inter(
+                            color: textColor, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

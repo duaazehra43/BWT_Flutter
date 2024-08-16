@@ -2,19 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final double fontSize;
-  final double padding;
 
   CustomButton({
     required this.text,
     required this.onPressed,
     this.fontSize = 16.0,
-    this.padding = 12.0,
   });
 
   @override
@@ -22,9 +20,8 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: ColorConstants.backgroundColor,
-        padding:
-            EdgeInsets.symmetric(vertical: padding.h, horizontal: padding.w),
+        backgroundColor: primaryColor,
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 40.w),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -32,7 +29,7 @@ class CustomButton extends StatelessWidget {
       child: Text(
         text,
         style: GoogleFonts.inter(
-          color: ColorConstants.foregroundColor,
+          color: foregroundColor,
           fontSize: fontSize.sp,
         ),
       ),

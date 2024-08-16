@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:task7_food_savior_app/core/constants/icons.dart';
+import 'package:task7_food_savior_app/utils/constants/icons.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: Image.asset(
-          IconsConstant.logoIcon,
+          logoIcon,
           height: 250,
           width: 250,
         ),

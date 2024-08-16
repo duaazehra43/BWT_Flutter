@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:task7_food_savior_app/core/services/provider.dart';
-import 'package:task7_food_savior_app/core/services/routes.dart';
+import 'package:task7_food_savior_app/utils/services/provider.dart';
+import 'package:task7_food_savior_app/utils/services/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

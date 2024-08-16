@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
-import 'package:task7_food_savior_app/core/constants/text.dart';
-import 'package:task7_food_savior_app/core/shared/custombuttons.dart';
-import 'package:task7_food_savior_app/modules/donor/services/donation_provider.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
+import 'package:task7_food_savior_app/core/donor/services/donation_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .collection('donations')
           .doc(donationId)
           .delete();
-      _fetchDonations(); // Refresh the list
+      _fetchDonations();
     } catch (e) {
       print("Error deleting donation: $e");
     }
@@ -88,7 +88,6 @@ class _HomeScreenState extends State<HomeScreen> {
       userRole = userDoc['role'];
     } catch (e) {
       print("Error: $e");
-      // Handle error appropriately
     }
   }
 
@@ -99,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: foregroundColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(100.h),
         child: AppBar(
@@ -107,9 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
             'Food Savior',
             style: GoogleFonts.inter(color: Colors.white),
           ),
-          backgroundColor: ColorConstants.backgroundColor,
-          iconTheme: IconThemeData(
-            color: ColorConstants.iconTheme,
+          backgroundColor: primaryColor,
+          iconTheme: const IconThemeData(
+            color: iconTheme,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -133,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 2,
                         blurRadius: 4,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -142,10 +141,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintText: 'Search...',
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 18.0.w,
-                        vertical: 0,
+                        vertical: 3.h,
                       ),
-                      prefixIcon: Icon(
+                      prefixIcon: const Icon(
                         Icons.search,
                         color: Colors.grey,
                       ),
@@ -162,28 +160,30 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: ColorConstants.backgroundColor,
+              decoration: const BoxDecoration(
+                color: primaryColor,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundColor: ColorConstants.foregroundColor,
-                    radius: 30,
+                    backgroundColor: foregroundColor,
+                    radius: 30.r,
                     child: Text(
                       userName != null ? userName![0] : '',
-                      style: TextStyle(fontSize: 30.0),
+                      style:
+                          GoogleFonts.inter(fontSize: 30.sp, color: textColor),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  10.height,
                   Text(userName ?? '',
-                      style: drawerTextStyle.copyWith(fontSize: 20.sp)),
+                      style: GoogleFonts.inter(
+                          fontSize: 20.sp, color: foregroundColor)),
                   Text(
                     userEmail ?? '',
-                    style: TextStyle(
-                      color: ColorConstants.foregroundColor,
-                      fontSize: 16,
+                    style: GoogleFonts.inter(
+                      color: foregroundColor,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],
@@ -191,17 +191,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             if (userRole != null)
               ListTile(
-                leading: Icon(Icons.person),
+                leading: const Icon(Icons.person),
                 title: Text(userRole!),
               ),
-            Divider(),
+            const Divider(),
           ],
         ),
       ),
       body: Consumer<DonationProvider>(
         builder: (context, donationProvider, child) {
           if (donationProvider.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (donationProvider.error != null) {
@@ -209,14 +209,14 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (donationProvider.donations.isEmpty) {
-            return Center(child: Text('No donations available.'));
+            return const Center(child: Text('No donations available.'));
           }
 
           return GridView.builder(
             padding: EdgeInsets.all(16.w),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
+              crossAxisCount: 1,
+              childAspectRatio: 2.0,
               crossAxisSpacing: 16.w,
               mainAxisSpacing: 16.h,
             ),
@@ -224,8 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (context, index) {
               var donation = donationProvider.donations[index];
               return Card(
-                color: ColorConstants.dropColor,
-                shadowColor: ColorConstants.shadowColor,
+                color: dropColor,
+                shadowColor: shadowColor,
                 elevation: 4,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
@@ -245,17 +245,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: 4.h),
+                          4.height,
                           Text(
                             'Quantity: ${donation['quantity']}',
                             style: GoogleFonts.inter(fontSize: 14.sp),
                           ),
-                          SizedBox(height: 4.h),
+                          4.height,
                           Text(
                             'Pickup: ${_formatTimestamp(donation['pickupTime'])}',
                             style: GoogleFonts.inter(fontSize: 12.sp),
                           ),
-                          SizedBox(height: 4.h),
+                          4.height,
                           Text(
                             donation['isAvailable']
                                 ? 'Available'
@@ -270,27 +270,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    Spacer(),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: PopupMenuButton<String>(
-                        color: ColorConstants.dropColor,
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            _editDonation(donation.id);
-                          } else if (value == 'delete') {
-                            donationProvider.deleteDonation(donation.id);
-                          }
-                        },
-                        itemBuilder: (BuildContext context) =>
-                            <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(
-                            value: 'edit',
-                            child: Text('Edit'),
+                    const Spacer(),
+                    Padding(
+                      padding: EdgeInsets.only(right: 8.0.w, bottom: 8.0.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _editDonation(donation.id),
                           ),
-                          const PopupMenuItem<String>(
-                            value: 'delete',
-                            child: Text('Delete'),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteDonation(donation.id),
                           ),
                         ],
                       ),

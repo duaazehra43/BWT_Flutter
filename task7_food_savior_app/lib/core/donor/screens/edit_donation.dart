@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
-import 'package:task7_food_savior_app/core/extensions/scaffold.dart';
-import 'package:task7_food_savior_app/core/shared/custombuttons.dart';
-import 'package:task7_food_savior_app/core/shared/customtextfield.dart';
-import 'package:task7_food_savior_app/modules/donor/services/edit_donation_service.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
+import 'package:task7_food_savior_app/core/donor/services/edit_donation_service.dart';
 
 class EditDonationScreen extends StatelessWidget {
   final User user;
@@ -49,11 +49,11 @@ class _EditDonationContent extends StatelessWidget {
       appBar: AppBar(
         title: Text('Edit Donation',
             style: GoogleFonts.inter(color: Colors.white)),
-        backgroundColor: ColorConstants.backgroundColor,
-        iconTheme: IconThemeData(color: ColorConstants.iconTheme),
+        backgroundColor: primaryColor,
+        iconTheme: const IconThemeData(color: iconTheme),
       ),
       body: viewModel.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(16.w),
@@ -89,7 +89,7 @@ class _EditDonationContent extends StatelessWidget {
                             onChanged: (value) {
                               viewModel.isAvailable = value;
                             },
-                            activeColor: ColorConstants.backgroundColor,
+                            activeColor: primaryColor,
                           ),
                           Text(
                               viewModel.isAvailable
@@ -118,7 +118,7 @@ class _EditDonationContent extends StatelessWidget {
                                 '${viewModel.pickupTime.hour}:${viewModel.pickupTime.minute.toString().padLeft(2, '0')}',
                                 style: GoogleFonts.inter(fontSize: 16.sp),
                               ),
-                              Icon(Icons.access_time),
+                              const Icon(Icons.access_time),
                             ],
                           ),
                         ),

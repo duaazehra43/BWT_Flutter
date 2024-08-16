@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:task7_food_savior_app/core/extensions/scaffold.dart';
-import 'package:task7_food_savior_app/modules/auth/services/auth_manager.dart';
+import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/core/auth/services/auth_manager.dart';
 
 class RegistrationViewModel {
   String name = '';

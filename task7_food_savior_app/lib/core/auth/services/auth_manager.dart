@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:task7_food_savior_app/modules/auth/services/auth_service.dart';
+import 'package:task7_food_savior_app/core/auth/services/auth_service.dart';
 
 class AuthManager extends ChangeNotifier {
   final AuthService _authService = AuthService();

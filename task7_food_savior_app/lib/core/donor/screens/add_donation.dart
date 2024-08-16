@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:task7_food_savior_app/core/constants/colors.dart';
-import 'package:task7_food_savior_app/core/extensions/scaffold.dart';
-import 'package:task7_food_savior_app/core/shared/custombuttons.dart';
-import 'package:task7_food_savior_app/core/shared/customtextfield.dart';
-import 'package:task7_food_savior_app/modules/donor/services/add_donation_service.dart';
+import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
+import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
+import 'package:task7_food_savior_app/core/donor/services/add_donation_service.dart';
 
 class AddDonationScreen extends StatefulWidget {
   final User user;
 
-  const AddDonationScreen({Key? key, required this.user}) : super(key: key);
+  const AddDonationScreen({super.key, required this.user});
 
   @override
   _AddDonationScreenState createState() => _AddDonationScreenState();
@@ -32,7 +33,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
       bool success = await _viewModel.addDonation();
       if (success) {
         context.showSnackBar('Donation added successfully');
-        Navigator.pop(context);
+        context.push('\homescreen');
       } else {
         context.showSnackBar('Failed to add donation. Please try again.');
       }
@@ -45,8 +46,8 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
       appBar: AppBar(
         title:
             Text('Add Donation', style: GoogleFonts.inter(color: Colors.white)),
-        backgroundColor: ColorConstants.backgroundColor,
-        iconTheme: IconThemeData(color: ColorConstants.iconTheme),
+        backgroundColor: primaryColor,
+        iconTheme: const IconThemeData(color: iconTheme),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -82,7 +83,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                           _viewModel.isAvailable = value;
                         });
                       },
-                      activeColor: ColorConstants.backgroundColor,
+                      activeColor: primaryColor,
                     ),
                     Text(_viewModel.isAvailable ? 'Available' : 'Not Available',
                         style: GoogleFonts.inter(fontSize: 16.sp)),
