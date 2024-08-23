@@ -33,7 +33,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
       bool success = await _viewModel.addDonation();
       if (success) {
         context.showSnackBar('Donation added successfully');
-        context.push('\homescreen');
+        context.pop();
       } else {
         context.showSnackBar('Failed to add donation. Please try again.');
       }

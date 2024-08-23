@@ -17,7 +17,7 @@ class DonationProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
 
-  void _fetchDonations() {
+  Future<void> _fetchDonations() async {
     _isLoading = true;
     notifyListeners();
 

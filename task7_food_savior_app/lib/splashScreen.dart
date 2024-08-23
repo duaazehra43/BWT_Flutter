@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:task7_food_savior_app/utils/constants/icons.dart';
 
@@ -24,8 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Image.asset(
           logoIcon,
-          height: 250,
-          width: 250,
+          height: 250.h,
+          width: 250.w,
         ),
       ),
     );

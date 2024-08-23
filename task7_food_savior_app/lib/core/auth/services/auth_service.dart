@@ -57,4 +57,10 @@ class AuthService {
   }
 
   User? get currentUser => _auth.currentUser;
+
+  Future<String?> getUserRole(String uid) async {
+    final DocumentSnapshot userDoc =
+        await _firestore.collection('users').doc(uid).get();
+    return userDoc['role'];
+  }
 }

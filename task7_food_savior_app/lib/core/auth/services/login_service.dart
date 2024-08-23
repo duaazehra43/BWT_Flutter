@@ -13,7 +13,12 @@ class LoginViewModel {
       final user =
           await _authService.signInWithEmailAndPassword(email, password);
       if (user != null) {
-        context.go('/homescreen', extra: user);
+        final role = await _authService.getUserRole(user.uid);
+        if (role == 'Donor') {
+          context.go('/homescreen', extra: user);
+        } else if (role == 'Receiver') {
+          context.go('/RhomeScreen', extra: user);
+        }
         context.showSnackBar('Login Successful');
         return true;
       }
