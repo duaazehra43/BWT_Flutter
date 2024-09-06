@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/text.dart';
 import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
 import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
 import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
 import 'package:task7_food_savior_app/core/donor/services/add_donation_service.dart';
@@ -30,10 +30,10 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
 
   Future<void> _addDonation() async {
     if (_formKey.currentState!.validate()) {
-      bool success = await _viewModel.addDonation();
+      bool success = await _viewModel.addDonation(context);
       if (success) {
         context.showSnackBar('Donation added successfully');
-        context.pop();
+        Navigator.pop(context);
       } else {
         context.showSnackBar('Failed to add donation. Please try again.');
       }
@@ -44,8 +44,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('Add Donation', style: GoogleFonts.inter(color: Colors.white)),
+        title: Text('Add Donation', style: appBarStyle),
         backgroundColor: primaryColor,
         iconTheme: const IconThemeData(color: iconTheme),
       ),
@@ -63,7 +62,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter food items' : null,
                 ),
-                SizedBox(height: 16.h),
+                16.height,
                 CustomTextField(
                   labelText: 'Quantity (for how many people)',
                   keyboardType: TextInputType.number,
@@ -72,10 +71,10 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter quantity' : null,
                 ),
-                SizedBox(height: 16.h),
+                16.height,
                 Row(
                   children: [
-                    Text('Status:', style: GoogleFonts.inter(fontSize: 16.sp)),
+                    Text('Status:', style: labelStyle),
                     Switch(
                       value: _viewModel.isAvailable,
                       onChanged: (value) {
@@ -86,11 +85,11 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                       activeColor: primaryColor,
                     ),
                     Text(_viewModel.isAvailable ? 'Available' : 'Not Available',
-                        style: GoogleFonts.inter(fontSize: 16.sp)),
+                        style: labelStyle),
                   ],
                 ),
-                SizedBox(height: 16.h),
-                Text('Pickup Time:', style: GoogleFonts.inter(fontSize: 16.sp)),
+                16.height,
+                Text('Pickup Time:', style: labelStyle),
                 SizedBox(height: 8.h),
                 InkWell(
                   onTap: () => _viewModel
@@ -100,7 +99,7 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                     padding:
                         EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(color: borderColor),
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Row(
@@ -108,14 +107,14 @@ class _AddDonationScreenState extends State<AddDonationScreen> {
                       children: [
                         Text(
                           '${_viewModel.pickupTime.hour}:${_viewModel.pickupTime.minute.toString().padLeft(2, '0')}',
-                          style: GoogleFonts.inter(fontSize: 16.sp),
+                          style: labelStyle,
                         ),
-                        Icon(Icons.access_time),
+                        const Icon(Icons.access_time),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 24.h),
+                24.height,
                 CustomButton(
                   text: 'Add Donation',
                   onPressed: _addDonation,

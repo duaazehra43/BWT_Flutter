@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:task7_food_savior_app/utils/constants/text.dart';
 
 class CustomTextField extends StatelessWidget {
   final String labelText;
@@ -29,7 +29,7 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: GoogleFonts.inter(),
+          labelStyle: labelStyle,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),

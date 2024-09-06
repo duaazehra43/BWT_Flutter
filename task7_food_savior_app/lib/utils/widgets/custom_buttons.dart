@@ -1,4 +1,3 @@
-// lib/widgets/custom_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +5,7 @@ import 'package:task7_food_savior_app/utils/constants/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final double fontSize;
 
   CustomButton({
@@ -20,7 +19,7 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
+        backgroundColor: onPressed != null ? primaryColor : Colors.grey,
         padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 40.w),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),

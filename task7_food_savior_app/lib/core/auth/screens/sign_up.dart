@@ -9,6 +9,8 @@ import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
 import 'package:task7_food_savior_app/core/auth/services/signup_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({super.key});
+
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }

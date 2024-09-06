@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:task7_food_savior_app/core/donor/screens/home_screen.dart';
+import 'package:task7_food_savior_app/core/receiver/screens/home_screen.dart';
 import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
 import 'package:task7_food_savior_app/core/auth/services/auth_service.dart';
 
@@ -15,9 +16,11 @@ class LoginViewModel {
       if (user != null) {
         final role = await _authService.getUserRole(user.uid);
         if (role == 'Donor') {
-          context.go('/homescreen', extra: user);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
         } else if (role == 'Receiver') {
-          context.go('/RhomeScreen', extra: user);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => RHomeScreen(user: user)));
         }
         context.showSnackBar('Login Successful');
         return true;

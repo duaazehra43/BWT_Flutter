@@ -15,7 +15,27 @@ class RDonationProvider with ChangeNotifier {
           .collection('donations')
           .where('isAvailable', isEqualTo: true)
           .get();
-      donations = querySnapshot.docs;
+
+      List<QueryDocumentSnapshot> validDonations = [];
+
+      for (var doc in querySnapshot.docs) {
+        Timestamp pickupTime = doc['pickupTime'];
+        DateTime currentTime = DateTime.now();
+
+        if (pickupTime.toDate().isAfter(currentTime)) {
+          validDonations.add(doc);
+        } else {
+          await FirebaseFirestore.instance
+              .collection('donations')
+              .doc(doc.id)
+              .update({
+            'isAvailable': false,
+            'isExpired': true,
+          });
+        }
+      }
+
+      donations = validDonations;
       error = null;
     } catch (e) {
       error = e.toString();
@@ -29,7 +49,6 @@ class RDonationProvider with ChangeNotifier {
   Future<bool> schedulePickup(
       String donationId, String id, Map<String, dynamic> donationData) async {
     try {
-      // Add to scheduledPickups collection
       await FirebaseFirestore.instance.collection('scheduledPickups').add({
         'donationId': donationId,
         'userId': donationData['userId'],
@@ -40,7 +59,6 @@ class RDonationProvider with ChangeNotifier {
         'receiverId': id,
       });
 
-      // Mark the donation as unavailable
       await FirebaseFirestore.instance
           .collection('donations')
           .doc(donationId)

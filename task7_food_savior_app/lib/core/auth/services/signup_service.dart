@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:task7_food_savior_app/core/auth/screens/login.dart';
 import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
 import 'package:task7_food_savior_app/core/auth/services/auth_manager.dart';
 
@@ -23,7 +23,8 @@ class RegistrationViewModel {
         password: password,
         role: role,
       );
-      context.go('/login');
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()));
       context.showSnackBar('Registration Successful');
       return true;
     } catch (e) {

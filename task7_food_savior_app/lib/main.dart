@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:task7_food_savior_app/splashScreen.dart';
 import 'package:task7_food_savior_app/utils/services/provider.dart';
-import 'package:task7_food_savior_app/utils/services/routes.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
@@ -21,10 +21,10 @@ class MyApp extends StatelessWidget {
     return Providers.buildProviders(
       ScreenUtilInit(
         designSize: const Size(375, 812),
-        builder: (context, child) => MaterialApp.router(
-          routerConfig: router,
+        builder: (context, child) => MaterialApp(
           title: 'Food Savior',
           debugShowCheckedModeBanner: false,
+          home: SplashScreen(),
           builder: (context, child) {
             return MediaQuery(
               data: MediaQuery.of(context)

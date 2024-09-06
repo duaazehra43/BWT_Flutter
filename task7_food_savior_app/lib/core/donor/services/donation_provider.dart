@@ -1,4 +1,3 @@
-// donation_provider.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +23,14 @@ class DonationProvider extends ChangeNotifier {
     FirebaseFirestore.instance
         .collection('donations')
         .where('userId', isEqualTo: user.uid)
-        .orderBy('createdAt', descending: true)
+        .where('isAvailable', isEqualTo: true)
+        .orderBy('pickupTime', descending: false)
         .snapshots()
         .listen((snapshot) {
-      _donations = snapshot.docs;
+      _donations = snapshot.docs.where((doc) {
+        Timestamp pickupTime = doc['pickupTime'];
+        return pickupTime.toDate().isAfter(DateTime.now());
+      }).toList();
       _isLoading = false;
       _error = null;
       notifyListeners();
@@ -72,5 +75,9 @@ class DonationProvider extends ChangeNotifier {
       _error = e.toString();
       notifyListeners();
     }
+  }
+
+  Future<void> refreshDonations() async {
+    _fetchDonations();
   }
 }

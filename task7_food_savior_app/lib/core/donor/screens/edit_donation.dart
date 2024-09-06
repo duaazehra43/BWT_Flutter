@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/text.dart';
 import 'package:task7_food_savior_app/utils/extensions/scaffold.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
 import 'package:task7_food_savior_app/utils/widgets/custom_buttons.dart';
 import 'package:task7_food_savior_app/utils/widgets/custom_textfield.dart';
 import 'package:task7_food_savior_app/core/donor/services/edit_donation_service.dart';
@@ -14,8 +15,7 @@ class EditDonationScreen extends StatelessWidget {
   final String donationId;
 
   const EditDonationScreen(
-      {Key? key, required this.user, required this.donationId})
-      : super(key: key);
+      {super.key, required this.user, required this.donationId});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class _EditDonationContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<EditDonationViewModel>(context);
 
-    Future<void> _updateDonation() async {
+    Future<void> updateDonation() async {
       if (_formKey.currentState!.validate()) {
         bool success = await viewModel.updateDonation();
         if (success) {
@@ -47,8 +47,7 @@ class _EditDonationContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Donation',
-            style: GoogleFonts.inter(color: Colors.white)),
+        title: Text('Edit Donation', style: appBarStyle),
         backgroundColor: primaryColor,
         iconTheme: const IconThemeData(color: iconTheme),
       ),
@@ -69,7 +68,7 @@ class _EditDonationContent extends StatelessWidget {
                         validator: (value) =>
                             value!.isEmpty ? 'Please enter food items' : null,
                       ),
-                      SizedBox(height: 16.h),
+                      16.height,
                       CustomTextField(
                         labelText: 'Quantity (for how many people)',
                         initialValue: viewModel.quantity.toString(),
@@ -79,11 +78,10 @@ class _EditDonationContent extends StatelessWidget {
                         validator: (value) =>
                             value!.isEmpty ? 'Please enter quantity' : null,
                       ),
-                      SizedBox(height: 16.h),
+                      16.height,
                       Row(
                         children: [
-                          Text('Status:',
-                              style: GoogleFonts.inter(fontSize: 16.sp)),
+                          Text('Status:', style: labelStyle),
                           Switch(
                             value: viewModel.isAvailable,
                             onChanged: (value) {
@@ -95,20 +93,19 @@ class _EditDonationContent extends StatelessWidget {
                               viewModel.isAvailable
                                   ? 'Available'
                                   : 'Not Available',
-                              style: GoogleFonts.inter(fontSize: 16.sp)),
+                              style: labelStyle),
                         ],
                       ),
-                      SizedBox(height: 16.h),
-                      Text('Pickup Time:',
-                          style: GoogleFonts.inter(fontSize: 16.sp)),
-                      SizedBox(height: 8.h),
+                      16.height,
+                      Text('Pickup Time:', style: labelStyle),
+                      8.height,
                       InkWell(
                         onTap: () => viewModel.selectTime(context),
                         child: Container(
                           padding: EdgeInsets.symmetric(
                               vertical: 12.h, horizontal: 16.w),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: borderColor),
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Row(
@@ -116,17 +113,17 @@ class _EditDonationContent extends StatelessWidget {
                             children: [
                               Text(
                                 '${viewModel.pickupTime.hour}:${viewModel.pickupTime.minute.toString().padLeft(2, '0')}',
-                                style: GoogleFonts.inter(fontSize: 16.sp),
+                                style: labelStyle,
                               ),
                               const Icon(Icons.access_time),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 24.h),
+                      24.height,
                       CustomButton(
                         text: 'Update Donation',
-                        onPressed: _updateDonation,
+                        onPressed: updateDonation,
                       ),
                     ],
                   ),

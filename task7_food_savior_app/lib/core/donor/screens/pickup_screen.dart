@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:task7_food_savior_app/utils/constants/colors.dart';
+import 'package:task7_food_savior_app/utils/constants/text.dart';
+import 'package:task7_food_savior_app/utils/extensions/sized_box.dart';
 
 class DonorPickupScreen extends StatelessWidget {
   final User user;
@@ -13,15 +15,18 @@ class DonorPickupScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scheduled Pickups'),
+        title: Text(
+          'Scheduled Pickups',
+          style: appBarStyle,
+        ),
         backgroundColor: primaryColor,
-        foregroundColor: foregroundColor,
+        iconTheme: const IconThemeData(color: iconTheme),
       ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
             .collection('scheduledPickups')
-            .where('userId', isEqualTo: user.uid) // Filter by the current donor
-            .get(),
+            .where('userId', isEqualTo: user.uid)
+            .snapshots(),
         builder: (context, pickupSnapshot) {
           if (pickupSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -43,11 +48,11 @@ class DonorPickupScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               var pickup = pickups[index].data() as Map<String, dynamic>;
 
-              return FutureBuilder<DocumentSnapshot>(
-                future: FirebaseFirestore.instance
+              return StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
                     .collection('donations')
                     .doc(pickup['donationId'])
-                    .get(),
+                    .snapshots(),
                 builder: (context, donationSnapshot) {
                   if (donationSnapshot.connectionState ==
                       ConnectionState.waiting) {
@@ -86,25 +91,28 @@ class DonorPickupScreen extends StatelessWidget {
                             donationData['foodItems'] ?? 'Unnamed Donation',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            style: donationNameStyle,
                           ),
-                          const SizedBox(height: 8.0),
+                          8.height,
                           Text(
                             'Quantity: ${donationData['quantity']}',
+                            style: donationLabelStyle,
                           ),
-                          const SizedBox(height: 4.0),
+                          4.height,
                           Text(
                             'Pickup Time: ${_formatTimestamp(pickup['pickupTime'])}',
                           ),
-                          const SizedBox(height: 8.0),
+                          8.height,
                           Text(
                             'Receiver:',
+                            style: labelStyle,
                           ),
-                          const SizedBox(height: 4.0),
+                          4.height,
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: ListTile(
                               contentPadding: EdgeInsets.zero,
-                              leading: Icon(
+                              leading: const Icon(
                                 Icons.person,
                                 color: primaryColor,
                               ),

@@ -14,7 +14,6 @@ class AuthService {
       );
       return userCredential.user;
     } catch (e) {
-      print('Error in signInWithEmailAndPassword: $e');
       throw Exception('Failed to sign in: $e');
     }
   }
@@ -47,7 +46,6 @@ class AuthService {
       }
       return user;
     } catch (e) {
-      print('Error in createUserWithEmailAndPassword: $e');
       throw Exception('Failed to create user: $e');
     }
   }
